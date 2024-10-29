@@ -1,13 +1,18 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class LapTimer : MonoBehaviour
 {
-    public TextMeshProUGUI timerText; 
-    public TextMeshProUGUI bestLapText; 
-    private float elapsedTime = 0f;   
-    private bool isTiming = false;    
-    private float bestLapTime = float.MaxValue; 
+    public TextMeshProUGUI timerText;
+    public TextMeshProUGUI bestLapText;
+
+    public GameObject[] checkpoints; // Array for checkpoint objects
+    private HashSet<GameObject> checkpointsPassed = new HashSet<GameObject>(); // Track passed checkpoints
+
+    private float elapsedTime = 0f;
+    private bool isTiming = false;
+    private float bestLapTime = float.MaxValue;
 
     private void Update()
     {
@@ -21,33 +26,55 @@ public class LapTimer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Start the timer or record a finish time when the car enters the trigger zone
+        // Check if the object is the car
         if (other.CompareTag("Car"))
         {
             if (!isTiming)
             {
-             
+                // Start timing when crossing the start line if not already started
                 isTiming = true;
                 elapsedTime = 0f;
+                checkpointsPassed.Clear(); // Reset checkpoints for the new lap
+                Debug.Log("Lap started. Timer reset.");
+            }
+            else if (AllCheckpointsPassed())
+            {
+                // If all checkpoints were passed, complete the lap
+                Debug.Log("Lap completed!");
+                if (elapsedTime < bestLapTime)
+                {
+                    bestLapTime = elapsedTime;
+                    UpdateBestLapDisplay();
+                    Debug.Log("New best lap time recorded: " + bestLapText.text);
+                }
+
+                elapsedTime = 0f; // Reset the timer for the next lap
+                checkpointsPassed.Clear(); // Reset checkpoints for the new lap
+                Debug.Log("Timer reset for new lap.");
             }
             else
             {
-                // Stop the timer on the next pass (finish line)
-                // Check if the current lap time is better than the best lap time
-                if (elapsedTime < bestLapTime)
-                {
-                    // Update the best lap time
-                    bestLapTime = elapsedTime;
-                    // Update the best lap display
-                    UpdateBestLapDisplay();
-                    elapsedTime = 0f; // Reset elapsed time here after checking the lap
-                }
-
-                // Reset the timer for the next lap immediately after recording the lap
-                elapsedTime = 0f; // Reset elapsed time here after checking the lap
-               
+                Debug.Log("Lap incomplete. Not all checkpoints have been passed.");
             }
         }
+    }
+
+    public void CheckpointPassed(GameObject checkpoint)
+    {
+        // Add checkpoint to passed list if it’s in the array and hasn't been counted yet
+        if (System.Array.Exists(checkpoints, cp => cp == checkpoint))
+        {
+            checkpointsPassed.Add(checkpoint);
+            Debug.Log("Checkpoint added: " + checkpoint.name);
+        }
+    }
+
+    private bool AllCheckpointsPassed()
+    {
+        // Check if all checkpoints have been passed
+        bool allPassed = checkpointsPassed.Count == checkpoints.Length;
+        Debug.Log("All checkpoints passed: " + allPassed);
+        return allPassed;
     }
 
     private void UpdateTimerDisplay()
@@ -68,6 +95,5 @@ public class LapTimer : MonoBehaviour
         int milliseconds = Mathf.FloorToInt((bestLapTime * 1000) % 1000);
 
         bestLapText.text = $"{minutes:00}:{seconds:00}:{milliseconds:000}";
-
     }
 }

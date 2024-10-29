@@ -1344,6 +1344,7 @@ GameObject:
   - component: {fileID: 934032095}
   - component: {fileID: 934032094}
   - component: {fileID: 934032093}
+  - component: {fileID: 934032097}
   m_Layer: 0
   m_Name: Checkpoint01
   m_TagString: Untagged
@@ -1440,6 +1441,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 130646589}
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 15.399994}
+--- !u!114 &934032097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934032092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852cd81f4d573c0419117e9d030e65c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lapTimer: {fileID: 1183648589}
 --- !u!1 &1052057815 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 9ea557c1393294c43b66248f3eb85c55, type: 3}
@@ -1548,6 +1562,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1490526365}
   bestLapText: {fileID: 829754905}
+  checkpoints:
+  - {fileID: 934032092}
+  - {fileID: 1874161947}
+  - {fileID: 1517836378}
 --- !u!65 &1183648590
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1935,6 +1953,7 @@ GameObject:
   - component: {fileID: 1517836381}
   - component: {fileID: 1517836380}
   - component: {fileID: 1517836379}
+  - component: {fileID: 1517836383}
   m_Layer: 0
   m_Name: Checkpoint03
   m_TagString: Untagged
@@ -2031,6 +2050,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 130646589}
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: -74.600006}
+--- !u!114 &1517836383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517836378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852cd81f4d573c0419117e9d030e65c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lapTimer: {fileID: 1183648589}
 --- !u!1 &1726440301
 GameObject:
   m_ObjectHideFlags: 0
@@ -2131,6 +2163,7 @@ GameObject:
   - component: {fileID: 1874161950}
   - component: {fileID: 1874161949}
   - component: {fileID: 1874161948}
+  - component: {fileID: 1874161952}
   m_Layer: 0
   m_Name: Checkpoint02
   m_TagString: Untagged
@@ -2227,6 +2260,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 130646589}
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: -74.600006}
+--- !u!114 &1874161952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874161947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852cd81f4d573c0419117e9d030e65c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lapTimer: {fileID: 1183648589}
 --- !u!1 &1888078369
 GameObject:
   m_ObjectHideFlags: 0
