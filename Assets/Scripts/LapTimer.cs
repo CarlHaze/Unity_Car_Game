@@ -11,8 +11,10 @@ public class LapTimer : MonoBehaviour
     private HashSet<GameObject> checkpointsPassed = new HashSet<GameObject>(); // Track passed checkpoints
 
     private float elapsedTime = 0f;
-    private bool isTiming = false;
+    public bool isTiming = false;
     private float bestLapTime = float.MaxValue;
+
+
 
     private void Update()
     {
