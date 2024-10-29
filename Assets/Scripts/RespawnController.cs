@@ -1,9 +1,25 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class RespawnController : MonoBehaviour
 {
     public Transform[] respawnPoints; // Array of respawn points in your scene
     private Transform nearestRespawnPoint;
+
+    InputAction reset;
+
+    private void Awake()
+    {
+        // Initialize input actions here to ensure they're set before OnEnable
+        reset = InputSystem.actions.FindAction("Select");
+    }
+
+    private void OnEnable()
+    {
+        // Enable input actions
+        reset.Enable();
+    
+    }
 
     void Update()
     {
@@ -12,6 +28,12 @@ public class RespawnController : MonoBehaviour
         {
             ResetToNearestRespawn();
         }
+
+        if (reset.triggered)
+        {
+            ResetToNearestRespawn();
+        }
+        
     }
 
     void ResetToNearestRespawn()

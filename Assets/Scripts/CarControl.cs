@@ -21,6 +21,10 @@ public class CarControl : MonoBehaviour
     InputAction brakeAction;
     InputAction steerAction;
 
+    
+    public Light LeftBrakeLight; 
+    public Light RightBrakeLight;
+
     private void Awake()
     {
         // Initialize input actions here to ensure they're set before OnEnable
@@ -55,6 +59,9 @@ public class CarControl : MonoBehaviour
         // Find all child GameObjects that have the WheelControl script attached
         wheels = GetComponentsInChildren<WheelControl>();
 
+        // Ensure brake lights are off at the start
+        LeftBrakeLight.enabled = false;
+        RightBrakeLight.enabled = false;
     }
 
     void Update()
@@ -84,6 +91,19 @@ public class CarControl : MonoBehaviour
 
         // Check if the car is accelerating in the same direction as its velocity
         bool isAccelerating = Mathf.Sign(vInput) == Mathf.Sign(forwardSpeed);
+        bool isBraking = brakeAction.ReadValue<float>() > 0; // Check if the brake is applied
+
+        // Control the brake lights
+        if (isBraking)
+        {
+            LeftBrakeLight.enabled = true;
+            RightBrakeLight.enabled = true;
+        }
+        else
+        {
+            LeftBrakeLight.enabled = false;
+            RightBrakeLight.enabled = false;
+        }
 
         foreach (var wheel in wheels)
         {

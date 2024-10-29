@@ -787,10 +787,12 @@ MonoBehaviour:
   motorTorque: 850
   brakeTorque: 850
   maxSpeed: 30
-  steeringRange: 45
-  steeringRangeAtMaxSpeed: 30
+  steeringRange: 20
+  steeringRangeAtMaxSpeed: 15
   centreOfGravityOffset: -0.1
   speedText: {fileID: 0}
+  LeftBrakeLight: {fileID: 119311808459300617}
+  RightBrakeLight: {fileID: 995343840456662608}
 --- !u!114 &7450044599362959533
 MonoBehaviour:
   m_ObjectHideFlags: 0
