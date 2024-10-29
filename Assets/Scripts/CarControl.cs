@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class CarControl : MonoBehaviour
 {
@@ -10,12 +11,40 @@ public class CarControl : MonoBehaviour
     public float steeringRangeAtMaxSpeed = 10;
     public float centreOfGravityOffset = -1f;
 
-    public TextMeshProUGUI speedText;  // Reference to the UI TextMeshPro element for speed display
+    public TextMeshProUGUI speedText;
 
     private WheelControl[] wheels;
     private Rigidbody rigidBody;
 
-    // Start is called before the first frame update
+    // Input actions for accelerate, brake, and steer
+    InputAction accelerateAction;
+    InputAction brakeAction;
+    InputAction steerAction;
+
+    private void Awake()
+    {
+        // Initialize input actions here to ensure they're set before OnEnable
+        accelerateAction = InputSystem.actions.FindAction("Accelerate");
+        brakeAction = InputSystem.actions.FindAction("Brake");
+        steerAction = InputSystem.actions.FindAction("Move");
+    }
+
+    private void OnEnable()
+    {
+        // Enable input actions
+        accelerateAction.Enable();
+        brakeAction.Enable();
+        steerAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        // Disable input actions
+        accelerateAction.Disable();
+        brakeAction.Disable();
+        steerAction.Disable();
+    }
+
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
@@ -25,14 +54,16 @@ public class CarControl : MonoBehaviour
 
         // Find all child GameObjects that have the WheelControl script attached
         wheels = GetComponentsInChildren<WheelControl>();
+
     }
 
-    // Update is called once per frame
     void Update()
     {
-        float vInput = Input.GetAxis("Vertical");
-        float hInput = Input.GetAxis("Horizontal");
+        // Combine keyboard (WASD or arrow keys) and controller input for acceleration and braking
+        float vInput = (accelerateAction.ReadValue<float>() - brakeAction.ReadValue<float>()) + Input.GetAxis("Vertical");
 
+        // Read steering from both keyboard and controller input
+        float hInput = steerAction.ReadValue<Vector2>().x + Input.GetAxis("Horizontal");
 
         // Calculate current speed in relation to the forward direction of the car
         float forwardSpeed = Vector3.Dot(transform.forward, rigidBody.linearVelocity);
