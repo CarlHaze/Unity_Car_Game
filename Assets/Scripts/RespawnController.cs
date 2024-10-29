@@ -18,7 +18,12 @@ public class RespawnController : MonoBehaviour
     {
         // Enable input actions
         reset.Enable();
-    
+    }
+
+    private void OnDisable()
+    {
+        // Disable input actions when not needed
+        reset.Disable();
     }
 
     void Update()
@@ -29,17 +34,17 @@ public class RespawnController : MonoBehaviour
             ResetToNearestRespawn();
         }
 
+        // Check if the Select action is triggered
         if (reset.triggered)
         {
             ResetToNearestRespawn();
         }
-        
     }
 
     void ResetToNearestRespawn()
     {
-        // Find the closest respawn point behind the car
-        nearestRespawnPoint = FindNearestRespawnBehind();
+        // Find the closest respawn point regardless of direction
+        nearestRespawnPoint = FindNearestRespawn();
 
         if (nearestRespawnPoint != null)
         {
@@ -57,7 +62,7 @@ public class RespawnController : MonoBehaviour
         }
     }
 
-    Transform FindNearestRespawnBehind()
+    Transform FindNearestRespawn()
     {
         Transform closestPoint = null;
         float closestDistance = Mathf.Infinity;
@@ -67,8 +72,8 @@ public class RespawnController : MonoBehaviour
             Vector3 toRespawn = point.position - transform.position;
             float distance = toRespawn.sqrMagnitude;
 
-            // Only consider points behind the car
-            if (Vector3.Dot(transform.forward, toRespawn) < 0 && distance < closestDistance)
+            // Check all respawn points without the direction condition
+            if (distance < closestDistance)
             {
                 closestDistance = distance;
                 closestPoint = point;
@@ -77,6 +82,4 @@ public class RespawnController : MonoBehaviour
 
         return closestPoint;
     }
-
-
 }
