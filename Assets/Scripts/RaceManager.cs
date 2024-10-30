@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,6 +13,10 @@ public class RaceManager : MonoBehaviour
     private InputAction reset;
     private LapTimer lapTimer; // Reference to the LapTimer component
 
+    // Speed UI
+    public TextMeshProUGUI speedText;
+    private CarControl carControl;
+
     private void Awake()
     {
         // Initialize input actions here to ensure they're set before OnEnable
@@ -22,6 +27,9 @@ public class RaceManager : MonoBehaviour
         if (carPrefab != null && startPos != null)
         {
             car = Instantiate(carPrefab, startPos.position, startPos.rotation);
+
+            // Get the CarControl component from the instantiated car
+            carControl = car.GetComponent<CarControl>();
 
             // Find the main camera and get its FollowCamera component
             Camera mainCamera = Camera.main;
@@ -72,6 +80,13 @@ public class RaceManager : MonoBehaviour
         if (reset.triggered)
         {
             ResetCarPosition();
+        }
+
+        // Update the speed text with the current speed from CarControl
+        if (carControl != null && speedText != null)
+        {
+            int currentSpeed = Mathf.RoundToInt(carControl.GetCurrentSpeed());
+            speedText.text = "Speed: " + currentSpeed.ToString();
         }
     }
 

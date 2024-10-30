@@ -1995,6 +1995,7 @@ MonoBehaviour:
   - {fileID: 270919850}
   startPos: {fileID: 1295794965}
   carPrefab: {fileID: 8356582895442378651, guid: b542167e649a18e4c9feaa7bd9325eb9, type: 3}
+  speedText: {fileID: 776241026}
 --- !u!4 &2016631622
 Transform:
   m_ObjectHideFlags: 0

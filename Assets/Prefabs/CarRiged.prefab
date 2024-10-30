@@ -815,13 +815,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 519cadabba351dc4da5cd6bf1c8c3413, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  motorTorque: 850
-  brakeTorque: 850
+  motorTorque: 1500
+  brakeTorque: 1700
   maxSpeed: 30
   steeringRange: 20
-  steeringRangeAtMaxSpeed: 15
+  steeringRangeAtMaxSpeed: 10
   centreOfGravityOffset: -0.1
-  speedText: {fileID: 0}
   LeftBrakeLight: {fileID: 119311808459300617}
   RightBrakeLight: {fileID: 995343840456662608}
 --- !u!4 &8418077991439171114 stripped

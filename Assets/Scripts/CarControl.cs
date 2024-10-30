@@ -11,8 +11,7 @@ public class CarControl : MonoBehaviour
     public float steeringRangeAtMaxSpeed = 10;
     public float centreOfGravityOffset = -1f;
 
-    public TextMeshProUGUI speedText;
-
+    //
     private WheelControl[] wheels;
     private Rigidbody rigidBody;
 
@@ -24,6 +23,8 @@ public class CarControl : MonoBehaviour
 
     public Light LeftBrakeLight;
     public Light RightBrakeLight;
+
+
 
     private void Awake()
     {
@@ -64,6 +65,12 @@ public class CarControl : MonoBehaviour
         RightBrakeLight.enabled = false;
     }
 
+    public float GetCurrentSpeed()
+    {
+        float forwardSpeed = Vector3.Dot(transform.forward, rigidBody.linearVelocity);
+        return Mathf.RoundToInt(Mathf.Abs(forwardSpeed * 3.6f)); // Convert to km/h and round to nearest whole number
+    }
+
     void Update()
     {
         // Combine keyboard (WASD or arrow keys) and controller input for acceleration and braking
@@ -76,11 +83,6 @@ public class CarControl : MonoBehaviour
         float forwardSpeed = Vector3.Dot(transform.forward, rigidBody.linearVelocity);
         float currentSpeed = Mathf.Abs(forwardSpeed * 3.6f); // Convert to km/h for display
 
-        // Update the speed text on the UI
-        if (speedText != null)
-        {
-            speedText.text = "Speed: " + currentSpeed.ToString("F1");
-        }
 
         // Calculate how close the car is to top speed
         float speedFactor = Mathf.InverseLerp(0, maxSpeed, forwardSpeed);
