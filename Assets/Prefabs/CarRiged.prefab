@@ -720,6 +720,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9ea557c1393294c43b66248f3eb85c55, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8650172846707712367}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9ea557c1393294c43b66248f3eb85c55, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4300196023669254402}
     - targetCorrespondingSourceObject: {fileID: -1504512135690388296, guid: 9ea557c1393294c43b66248f3eb85c55, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2489212687322422731}
@@ -815,14 +818,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 519cadabba351dc4da5cd6bf1c8c3413, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  motorTorque: 2500
-  brakeTorque: 2700
+  motorTorque: 6000
+  brakeTorque: 8000
   maxSpeed: 30
   steeringRange: 20
   steeringRangeAtMaxSpeed: 10
   centerOfMass: {x: 0, y: 0, z: 0}
   LeftBrakeLight: {fileID: 119311808459300617}
   RightBrakeLight: {fileID: 995343840456662608}
+  gearRatios:
+  - 3
+  - 2
+  - 1.5
+  - 1
+  - 0.8
+  finalDriveRatio: 4.1
+  maxRPM: 7000
+  currentGear: 0
+  currentRPM: 0
+--- !u!114 &4300196023669254402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8356582895442378651}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73000bd7a0433284aa1ef51419df10b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enginePower: 147
+  maxRPM: 6500
+  gearRatios:
+  - 3.475
+  - 2.002
+  - 1.366
+  - 1
+  - 0.756
+  finalDriveRatio: 4.1
+  curbWeight: 1223
+  centerOfMass: {x: 0, y: 0, z: 0}
+  MaxAngleAtSpeed: 10
+  steeringRange: 30
+  steeringRangeAtMaxSpeed: 10
 --- !u!4 &8418077991439171114 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 858753055883820256, guid: 9ea557c1393294c43b66248f3eb85c55, type: 3}

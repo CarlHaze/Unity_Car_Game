@@ -1,20 +1,19 @@
-using UnityEngine;
-using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine;
 
 public class CarControl : MonoBehaviour
 {
-    public float motorTorque = 2000;
-    public float brakeTorque = 2000;
-    public float maxSpeed = 20;
+    public float motorTorque = 2500;
+    public float brakeTorque = 2700;
+    public float maxSpeed = 200;  // Increased max speed for RX-7
     public float steeringRange = 30;
     public float steeringRangeAtMaxSpeed = 10;
-    public Vector3 centerOfMass; // Expose center of mass to allow it to be set from the inspector
+    public Vector3 centerOfMass;
 
     private WheelControl[] wheels;
     private Rigidbody rigidBody;
 
-    // Input actions for accelerate, brake, and steer
+    // Input actions for acceleration and steering
     InputAction accelerateAction;
     InputAction brakeAction;
     InputAction steerAction;
@@ -23,16 +22,15 @@ public class CarControl : MonoBehaviour
     public Light RightBrakeLight;
 
     // Gearing and RPM system
-    public float[] gearRatios = { 3.0f, 2.0f, 1.5f, 1.0f, 0.8f }; // Example gear ratios
-    public float finalDriveRatio = 3.42f;
-    public float maxRPM = 7000;
-    public float idleRPM = 800;
-    private int currentGear = 0;
-    private float currentRPM = 0;
+    public float[] gearRatios = { 3.475f, 2.002f, 1.366f, 1.0f, 0.756f };
+    public float finalDriveRatio = 4.1f; // RX-7 FC final drive ratio
+    public float maxRPM = 7000f; // RX-7 FC max RPM
+
+    [SerializeField] private int currentGear = 0;
+    [SerializeField] private float currentRPM = 0;
 
     private void Awake()
     {
-        // Initialize input actions here to ensure they're set before OnEnable
         accelerateAction = InputSystem.actions.FindAction("Accelerate");
         brakeAction = InputSystem.actions.FindAction("Brake");
         steerAction = InputSystem.actions.FindAction("Move");
@@ -40,7 +38,6 @@ public class CarControl : MonoBehaviour
 
     private void OnEnable()
     {
-        // Enable input actions
         accelerateAction.Enable();
         brakeAction.Enable();
         steerAction.Enable();
@@ -48,7 +45,6 @@ public class CarControl : MonoBehaviour
 
     private void OnDisable()
     {
-        // Disable input actions
         accelerateAction.Disable();
         brakeAction.Disable();
         steerAction.Disable();
@@ -57,14 +53,8 @@ public class CarControl : MonoBehaviour
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
-
-        // Set the center of mass from the inspector
         rigidBody.centerOfMass = centerOfMass;
-
-        // Find all child GameObjects that have the WheelControl script attached
         wheels = GetComponentsInChildren<WheelControl>();
-
-        // Ensure brake lights are off at the start
         LeftBrakeLight.enabled = false;
         RightBrakeLight.enabled = false;
     }
@@ -82,61 +72,52 @@ public class CarControl : MonoBehaviour
 
     public int GetCurrentGear()
     {
-        return currentGear + 1; // +1 to make it 1-based instead of 0-based
+        return currentGear + 1; // +1 to make it 1-based
     }
 
     void FixedUpdate()
     {
-        // Combine keyboard (WASD or arrow keys) and controller input for acceleration and braking
         float vInput = (accelerateAction.ReadValue<float>() - brakeAction.ReadValue<float>()) + Input.GetAxis("Vertical");
-
-        // Read steering from both keyboard and controller input
         float hInput = steerAction.ReadValue<Vector2>().x + Input.GetAxis("Horizontal");
 
-        // Calculate current speed in relation to the forward direction of the car
         float forwardSpeed = Vector3.Dot(transform.forward, rigidBody.linearVelocity);
-        float currentSpeed = Mathf.Abs(forwardSpeed * 3.6f); // Convert to km/h for display
-
-        // Calculate how close the car is to top speed
+        float currentSpeed = Mathf.Abs(forwardSpeed * 3.6f); // km/h
         float speedFactor = Mathf.InverseLerp(0, maxSpeed, forwardSpeed);
 
-        // Calculate available torque and steering range
         float currentMotorTorque = Mathf.Lerp(motorTorque, 0, speedFactor);
         float currentSteerRange = Mathf.Lerp(steeringRange, steeringRangeAtMaxSpeed, speedFactor);
 
-        // Check if the car is accelerating in the same direction as its velocity
-        bool isAccelerating = Mathf.Sign(vInput) == Mathf.Sign(forwardSpeed);
-        bool isBraking = brakeAction.ReadValue<float>() > 0; // Check if the brake is applied
+        bool isBraking = brakeAction.ReadValue<float>() > 0;
+        LeftBrakeLight.enabled = RightBrakeLight.enabled = isBraking;
 
-        // Control the brake lights
-        if (isBraking)
+        if (vInput > 0)
         {
-            LeftBrakeLight.enabled = true;
-            RightBrakeLight.enabled = true;
+            // Calculate current RPM based on speed, gear ratio, and throttle
+            currentRPM = Mathf.Lerp(
+                currentRPM,
+                Mathf.Clamp((currentSpeed / gearRatios[currentGear]) * finalDriveRatio * 60, 0, maxRPM),
+                Time.deltaTime * 5f
+            );
         }
         else
         {
-            LeftBrakeLight.enabled = false;
-            RightBrakeLight.enabled = false;
+            // Smoothly decrease RPM to 0 when not accelerating
+            currentRPM = Mathf.Lerp(currentRPM, 0, Time.deltaTime * 2f);
         }
 
-        // Calculate RPM based on current speed and gear ratio
-        currentRPM = Mathf.Clamp((currentSpeed / gearRatios[currentGear]) * finalDriveRatio * 60, idleRPM, maxRPM);
-
-        // Calculate torque and horsepower
-        float torque = currentMotorTorque * (currentRPM / maxRPM);
-        float horsepower = (torque * currentRPM) / 5252;
-
-        // Automatic transmission logic
+        // Automatic transmission shifting logic
         if (currentRPM > maxRPM * 0.9f && currentGear < gearRatios.Length - 1)
         {
             currentGear++;
+            currentRPM = Mathf.Clamp(currentRPM / 2, 0, maxRPM);
         }
         else if (currentRPM < maxRPM * 0.3f && currentGear > 0)
         {
             currentGear--;
+            currentRPM = Mathf.Clamp(currentRPM * 1.5f, 0, maxRPM);
         }
 
+        // Apply torque to motorized wheels only when accelerating
         foreach (var wheel in wheels)
         {
             if (wheel.steerable)
@@ -144,17 +125,17 @@ public class CarControl : MonoBehaviour
                 wheel.WheelCollider.steerAngle = hInput * currentSteerRange;
             }
 
-            if (isAccelerating)
+            if (vInput > 0)
             {
                 if (wheel.motorized)
                 {
-                    wheel.WheelCollider.motorTorque = vInput * torque;
+                    wheel.WheelCollider.motorTorque = vInput * currentMotorTorque;
                 }
                 wheel.WheelCollider.brakeTorque = 0;
             }
             else
             {
-                wheel.WheelCollider.brakeTorque = Mathf.Abs(vInput) * brakeTorque;
+                wheel.WheelCollider.brakeTorque = brakeTorque;
                 wheel.WheelCollider.motorTorque = 0;
             }
         }
