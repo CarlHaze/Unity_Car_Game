@@ -15,6 +15,8 @@ public class RaceManager : MonoBehaviour
 
     // Speed UI
     public TextMeshProUGUI speedText;
+    public TextMeshProUGUI rpmText;
+
     private CarControl carControl;
 
     private void Awake()
@@ -87,6 +89,14 @@ public class RaceManager : MonoBehaviour
         {
             int currentSpeed = Mathf.RoundToInt(carControl.GetCurrentSpeed());
             speedText.text = "Speed: " + currentSpeed.ToString();
+        }
+
+        // Update the RPM and gear text with the current values from CarControl
+        if (carControl != null && rpmText != null)
+        {
+            float currentRPM = carControl.GetCurrentRPM();
+            int currentGear = carControl.GetCurrentGear();
+            rpmText.text = $"RPM: {currentRPM:F0}\nGear: {currentGear}";
         }
     }
 

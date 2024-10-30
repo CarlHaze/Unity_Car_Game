@@ -22,6 +22,14 @@ public class CarControl : MonoBehaviour
     public Light LeftBrakeLight;
     public Light RightBrakeLight;
 
+    // Gearing and RPM system
+    public float[] gearRatios = { 3.0f, 2.0f, 1.5f, 1.0f, 0.8f }; // Example gear ratios
+    public float finalDriveRatio = 3.42f;
+    public float maxRPM = 7000;
+    public float idleRPM = 800;
+    private int currentGear = 0;
+    private float currentRPM = 0;
+
     private void Awake()
     {
         // Initialize input actions here to ensure they're set before OnEnable
@@ -67,6 +75,16 @@ public class CarControl : MonoBehaviour
         return Mathf.Abs(forwardSpeed * 3.6f); // Convert to km/h for display
     }
 
+    public float GetCurrentRPM()
+    {
+        return currentRPM;
+    }
+
+    public int GetCurrentGear()
+    {
+        return currentGear + 1; // +1 to make it 1-based instead of 0-based
+    }
+
     void FixedUpdate()
     {
         // Combine keyboard (WASD or arrow keys) and controller input for acceleration and braking
@@ -102,6 +120,23 @@ public class CarControl : MonoBehaviour
             RightBrakeLight.enabled = false;
         }
 
+        // Calculate RPM based on current speed and gear ratio
+        currentRPM = Mathf.Clamp((currentSpeed / gearRatios[currentGear]) * finalDriveRatio * 60, idleRPM, maxRPM);
+
+        // Calculate torque and horsepower
+        float torque = currentMotorTorque * (currentRPM / maxRPM);
+        float horsepower = (torque * currentRPM) / 5252;
+
+        // Automatic transmission logic
+        if (currentRPM > maxRPM * 0.9f && currentGear < gearRatios.Length - 1)
+        {
+            currentGear++;
+        }
+        else if (currentRPM < maxRPM * 0.3f && currentGear > 0)
+        {
+            currentGear--;
+        }
+
         foreach (var wheel in wheels)
         {
             if (wheel.steerable)
@@ -113,7 +148,7 @@ public class CarControl : MonoBehaviour
             {
                 if (wheel.motorized)
                 {
-                    wheel.WheelCollider.motorTorque = vInput * currentMotorTorque;
+                    wheel.WheelCollider.motorTorque = vInput * torque;
                 }
                 wheel.WheelCollider.brakeTorque = 0;
             }
