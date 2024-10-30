@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Car
+  - CameraFocusPoint
   layers:
   - Default
   - TransparentFX

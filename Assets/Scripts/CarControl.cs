@@ -21,8 +21,8 @@ public class CarControl : MonoBehaviour
     InputAction brakeAction;
     InputAction steerAction;
 
-    
-    public Light LeftBrakeLight; 
+
+    public Light LeftBrakeLight;
     public Light RightBrakeLight;
 
     private void Awake()
