@@ -9,9 +9,8 @@ public class CarControl : MonoBehaviour
     public float maxSpeed = 20;
     public float steeringRange = 30;
     public float steeringRangeAtMaxSpeed = 10;
-    public float centreOfGravityOffset = -1f;
+    public Vector3 centerOfMass; // Expose center of mass to allow it to be set from the inspector
 
-    //
     private WheelControl[] wheels;
     private Rigidbody rigidBody;
 
@@ -51,8 +50,8 @@ public class CarControl : MonoBehaviour
     {
         rigidBody = GetComponent<Rigidbody>();
 
-        // Adjust center of mass vertically, to help prevent the car from rolling
-        rigidBody.centerOfMass += Vector3.up * centreOfGravityOffset;
+        // Set the center of mass from the inspector
+        rigidBody.centerOfMass = centerOfMass;
 
         // Find all child GameObjects that have the WheelControl script attached
         wheels = GetComponentsInChildren<WheelControl>();
