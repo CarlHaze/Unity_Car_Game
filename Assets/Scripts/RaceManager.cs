@@ -15,7 +15,6 @@ public class RaceManager : MonoBehaviour
 
     // Speed UI
     public TextMeshProUGUI speedText;
-    public TextMeshProUGUI rpmText;
 
     private CarControl carControl;
 
@@ -72,11 +71,6 @@ public class RaceManager : MonoBehaviour
 
     void Update()
     {
-        // Check if the player presses the respawn button
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            ResetCarPosition();
-        }
 
         // Check if the Select action is triggered
         if (reset.triggered)
@@ -91,13 +85,6 @@ public class RaceManager : MonoBehaviour
             speedText.text = "Speed: " + currentSpeed.ToString();
         }
 
-        // Update the RPM and gear text with the current values from CarControl
-        if (carControl != null && rpmText != null)
-        {
-            float currentRPM = carControl.GetCurrentRPM();
-            int currentGear = carControl.GetCurrentGear();
-            rpmText.text = $"RPM: {currentRPM:F0}\nGear: {currentGear}";
-        }
     }
 
     void ResetCarPosition()
