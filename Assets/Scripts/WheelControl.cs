@@ -21,8 +21,8 @@ public class WheelControl : MonoBehaviour
         WheelCollider = GetComponent<WheelCollider>();
     }
 
-    // Update is called once per frame
-    void Update()
+    // FixedUpdate is called at a fixed interval and is used for physics updates
+    void FixedUpdate()
     {
         // Get the Wheel collider's world pose values and
         // use them to set the wheel model's position and rotation

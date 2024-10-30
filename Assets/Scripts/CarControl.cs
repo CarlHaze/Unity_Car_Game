@@ -20,11 +20,8 @@ public class CarControl : MonoBehaviour
     InputAction brakeAction;
     InputAction steerAction;
 
-
     public Light LeftBrakeLight;
     public Light RightBrakeLight;
-
-
 
     private void Awake()
     {
@@ -68,10 +65,10 @@ public class CarControl : MonoBehaviour
     public float GetCurrentSpeed()
     {
         float forwardSpeed = Vector3.Dot(transform.forward, rigidBody.linearVelocity);
-        return Mathf.RoundToInt(Mathf.Abs(forwardSpeed * 3.6f)); // Convert to km/h and round to nearest whole number
+        return Mathf.Abs(forwardSpeed * 3.6f); // Convert to km/h for display
     }
 
-    void Update()
+    void FixedUpdate()
     {
         // Combine keyboard (WASD or arrow keys) and controller input for acceleration and braking
         float vInput = (accelerateAction.ReadValue<float>() - brakeAction.ReadValue<float>()) + Input.GetAxis("Vertical");
@@ -82,7 +79,6 @@ public class CarControl : MonoBehaviour
         // Calculate current speed in relation to the forward direction of the car
         float forwardSpeed = Vector3.Dot(transform.forward, rigidBody.linearVelocity);
         float currentSpeed = Mathf.Abs(forwardSpeed * 3.6f); // Convert to km/h for display
-
 
         // Calculate how close the car is to top speed
         float speedFactor = Mathf.InverseLerp(0, maxSpeed, forwardSpeed);
