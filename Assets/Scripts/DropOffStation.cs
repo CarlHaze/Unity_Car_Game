@@ -2,13 +2,22 @@ using UnityEngine;
 
 public class DropOffStation : MonoBehaviour
 {
+    /*
+     verify if the player has arrived at the correct address and deliver the package if it matches the current delivery target.
+     */
+    public string address;  // The specific address of this drop-off station
+
     private void OnTriggerEnter(Collider other)
     {
-        // Check if the car entered the drop-off station
         if (other.CompareTag("Car"))
         {
-            // Call the DropOff method on CollectableManager
-            CollectableManager.Instance.DropOff();
+            foreach (var package in PackageManager.Instance.packages)
+            {
+                if (package.isCollected && !package.isDelivered)
+                {
+                    PackageManager.Instance.DeliverPackage(package, address);
+                }
+            }
         }
     }
 }
